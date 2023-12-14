@@ -1,4 +1,5 @@
-﻿using webapi.event_.Contexts;
+﻿using Microsoft.AspNetCore.Mvc;
+using webapi.event_.Contexts;
 using webapi.event_.Domains;
 using webapi.event_.Interfaces;
 
@@ -125,7 +126,7 @@ namespace webapi.event_.Repositories
                             NomeEvento = c.Evento!.NomeEvento,
                         }
 
-                    }).ToList();
+                    }).Where (c=> c.IdEvento== id). ToList();
             }
             catch (Exception)
             {
@@ -133,5 +134,37 @@ namespace webapi.event_.Repositories
                 throw;
             }
         }
+
+        public List<ComentariosEvento> ListarSomenteExibe(Guid id)
+        {
+
+            try
+            {
+                return _context.ComentariosEvento
+                    .Select(c => new ComentariosEvento
+                    {
+                        Descricao = c.Descricao,
+                        Exibe = c.Exibe,
+
+                        Usuario = new Usuario
+                        {
+                            Nome = c.Usuario!.Nome
+                        },
+
+                        Evento = new Evento
+                        {
+                            NomeEvento = c.Evento!.NomeEvento,
+                        }
+
+                    }). Where(c=> c.Exibe == true && c.IdEvento ==id).ToList();
+                    
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
     }
 }
